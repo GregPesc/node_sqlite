@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  },
+  "name": "node_sqlite",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GregPesc/node_sqlite.git"
+  },
+  "author": "GregPesc",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/GregPesc/node_sqlite/issues"
+  },
+  "homepage": "https://github.com/GregPesc/node_sqlite#readme",
+  "description": "Applicazione con sqlite3",
+  "type": "module"
+}
