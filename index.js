@@ -6,11 +6,13 @@
 
 // 1. Registrare un utente
 // 2. Inserire un prodotto
-// 3. Contrassegnare come completato prodotto esistente
+// 3. Contrassegnare come comprato prodotto esistente
 // 4. Visualizzare lista prodotti di un utente
 // 5. Exit
 
 import sqlite3 from "sqlite3";
+import inquirer from 'inquirer';
+import { exit } from 'process';
 
 const db = new sqlite3.Database("spesa.db", (err) => {
     if (err) {
@@ -25,5 +27,21 @@ db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS Utente (username TEXT NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, PRIMARY KEY(username))");
     db.run("CREATE TABLE IF NOT EXISTS Prodotto (nome TEXT NOT NULL, comprato INTEGER NOT NULL DEFAULT 0, id INTEGER NOT NULL, utente TEXT NOT NULL, FOREIGN KEY('utente') REFERENCES Utente(username), PRIMARY KEY(id AUTOINCREMENT))");
 });
+
+const menu = [
+    {
+        type: "list",
+        name: "option",
+        message: "Scegli un\'opzione",
+        choices: ["Registra un utente", "Inserisci prodotto", "Contrassegna come comprato un prodotto", "Visualizza la lista dei prodotti di un utente"]
+    }
+];
+
+function main() {
+    inquirer.prompt(menu).then((answer) => {
+        switch (answer.option) {
+        }
+    });
+}
 
 db.close();

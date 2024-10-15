@@ -1,11 +1,11 @@
 {
   "dependencies": {
+    "inquirer": "^12.0.0",
     "sqlite3": "^5.1.7"
   },
   "name": "node_sqlite",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "jest"
   },
