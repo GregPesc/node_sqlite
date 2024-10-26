@@ -46,6 +46,24 @@ const menu = [
     }
 ];
 
+const askUsername = [
+    {
+        type: 'input',
+        name: 'username',
+        message: 'Inserisci lo username',
+        filter: function (val) {
+            return val.trim().toLowerCase();
+        },
+        validate: function (value) {
+            if (value.trim().length) {
+                return true;
+            } else {
+                return 'Inserisci uno username valido!';
+            }
+        }
+    }
+];
+
 const register = [
     {
         type: 'input',
@@ -94,7 +112,7 @@ const register = [
     }
 ];
 
-const askUsername = [
+const product = [
     {
         type: 'input',
         name: 'username',
@@ -109,8 +127,23 @@ const askUsername = [
                 return 'Inserisci uno username valido!';
             }
         }
+    },
+    {
+        type: 'input',
+        name: 'product',
+        message: 'Inserisci il nome del prodotto',
+        filter: function (val) {
+            return val.trim().toLowerCase();
+        },
+        validate: function (value) {
+            if (value.trim().length) {
+                return true;
+            } else {
+                return 'Inserisci un prodotto valido!';
+            }
+        }
     }
-];
+]
 
 function main() {
     inquirer.prompt(menu).then((answers) => {
@@ -166,7 +199,7 @@ function registration() {
                                 console.error("Impossibile inserire i dati utente!");
                                 main();
                             } else {
-                                console.log("Utente registrato con successo");
+                                console.log("Utente registrato con successo.");
                                 main();
                             }
                         });
@@ -177,9 +210,34 @@ function registration() {
     });
 }
 
+function addProduct() {
+    inquirer.prompt(product).then((answers) => {
+        let stmt = db.prepare("SELECT * FROM Prodotto WHERE nome = ? ;");
+        stmt.all(answers.product, (err, rows) => {
+            if (err) {
+                console.error("Errore nella ricerca dei prodotti", err);
+                main();
+            } else if (rows.length === 0) {
+                let stmt = db.prepare("INSERT INTO Prodotto (nome, comprato, utente) VALUES (?, ?, ?);");
+                stmt.run(answers.product, 0, answers.username), (err) => {
+                    if (err) {
+                        console.error("Impossibile il prodotto!", err);
+                        main();
+                    } else {
+                        console.log("Prodotto inserito con successo.");
+                        main();
+                    }
+                }
+            } else {
+                main();
+            }
+        });
+    });
+}
+
 function viewList() {
     inquirer.prompt(askUsername).then((answers) => {
-        let stmt = db.prepare("SELECT * FROM Prodotto WHERE Utente = ? ;");
+        let stmt = db.prepare("SELECT * FROM Prodotto WHERE utente = ? ;");
         stmt.all(answers.username, (err, rows) => {
             if (err) {
                 console.error("Errore nella ricerca della lista della spesa!");
