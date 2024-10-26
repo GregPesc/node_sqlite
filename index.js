@@ -13,6 +13,16 @@
 import sqlite3 from "sqlite3";
 import inquirer from 'inquirer';
 
+function isValidPassword(password) {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$&_\#@\-%\*]).+$/;
+    return passwordRegex.test(password);
+}
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 const db = new sqlite3.Database("spesa.db", (err) => {
     if (err) {
         console.error("Errore nell'apertura del DB.\n", err.message);
@@ -130,28 +140,6 @@ function main() {
     });
 }
 
-function viewList() {
-    inquirer.prompt(askUsername).then((answers) => {
-        let stmt = db.prepare("SELECT * FROM Prodotto WHERE Utente = ? ;");
-        stmt.all(answers.username, (err, rows) => {
-            if (err) {
-                console.error("Errore nella ricerca della lista della spesa!");
-                main();
-            } else if (rows.length === 0) {
-                console.log("Lista della spesa vuota");
-                main();
-            } else {
-                console.log("Lista della spesa:");
-                rows.forEach((row) => {
-                    console.log(row);
-                });
-                main();
-            }
-        });
-    });
-}
-
-
 function registration() {
     inquirer.prompt(register).then((answers) => {
         let stmt = db.prepare("SELECT username FROM Utente WHERE username = ? ;");
@@ -189,14 +177,25 @@ function registration() {
     });
 }
 
-function isValidPassword(password) {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$&_\#@\-%\*]).+$/;
-    return passwordRegex.test(password);
-}
-
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+function viewList() {
+    inquirer.prompt(askUsername).then((answers) => {
+        let stmt = db.prepare("SELECT * FROM Prodotto WHERE Utente = ? ;");
+        stmt.all(answers.username, (err, rows) => {
+            if (err) {
+                console.error("Errore nella ricerca della lista della spesa!");
+                main();
+            } else if (rows.length === 0) {
+                console.log("Lista della spesa vuota");
+                main();
+            } else {
+                console.log("Lista della spesa:");
+                rows.forEach((row) => {
+                    console.log(row);
+                });
+                main();
+            }
+        });
+    });
 }
 
 main();
