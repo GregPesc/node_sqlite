@@ -41,6 +41,9 @@ const register = [
         type: 'input',
         name: 'username',
         message: 'Inserisci il tuo username',
+        filter: function (val) {
+            return val.trim().toLowerCase();
+        },
         validate: function (value) {
             if (value.trim().length) {
                 return true;
@@ -53,6 +56,9 @@ const register = [
         type: 'password',
         name: 'password',
         message: 'Inserisci la tua password',
+        filter: function (val) {
+            return val.trim();
+        },
         validate: function (value) {
             if (value.trim().length && isValidPassword(value)) {
                 return true;
@@ -65,6 +71,9 @@ const register = [
         type: 'input',
         name: 'email',
         message: 'Inserisci la tua email',
+        filter: function (val) {
+            return val.trim();
+        },
         validate: function (value) {
             if (value.trim().length && isValidEmail(value)) {
                 return true;
@@ -80,6 +89,9 @@ const askUsername = [
         type: 'input',
         name: 'username',
         message: 'Inserisci lo username',
+        filter: function (val) {
+            return val.trim().toLowerCase();
+        },
         validate: function (value) {
             if (value.trim().length) {
                 return true;
@@ -121,7 +133,7 @@ function main() {
 function viewList() {
     inquirer.prompt(askUsername).then((answers) => {
         let stmt = db.prepare("SELECT * FROM Prodotto WHERE Utente = ? ;");
-        stmt.all(answers.username.trim().toLowerCase(), (err, rows) => {
+        stmt.all(answers.username, (err, rows) => {
             if (err) {
                 console.error("Errore nella ricerca della lista della spesa!");
                 main();
@@ -143,7 +155,7 @@ function viewList() {
 function registration() {
     inquirer.prompt(register).then((answers) => {
         let stmt = db.prepare("SELECT username FROM Utente WHERE username = ? ;");
-        stmt.get(answers.username.trim().toLowerCase(), (err, row) => {
+        stmt.get(answers.username, (err, row) => {
             if (err) {
                 console.error("Errore nella ricerca dell'utente!");
                 main();
@@ -152,7 +164,7 @@ function registration() {
                 main();
             } else {
                 let stmt = db.prepare("SELECT email FROM Utente WHERE email = ? ;");
-                stmt.get(answers.email.trim(), (err, row) => {
+                stmt.get(answers.email, (err, row) => {
                     if (err) {
                         console.error("Errore nella ricerca dell'email!");
                         main();
@@ -161,7 +173,7 @@ function registration() {
                         main();
                     } else {
                         let stmt = db.prepare("INSERT INTO Utente (username, password, email) VALUES (?, ?, ?);");
-                        stmt.run(answers.username.trim().toLowerCase(), answers.password.trim(), answers.email.trim(), (err) => {
+                        stmt.run(answers.username, answers.password, answers.email, (err) => {
                             if (err) {
                                 console.error("Impossibile inserire i dati utente!");
                                 main();
